@@ -15,5 +15,3 @@ If you run into bugs, please raise them on the GitHub repository. Please do not 
 ## Contributions
 
 The guidelines around submitting pull requests can be found [here](https://github.com/MaikuB/flutter_local_notifications/blob/master/CONTRIBUTING.md)
-
-
