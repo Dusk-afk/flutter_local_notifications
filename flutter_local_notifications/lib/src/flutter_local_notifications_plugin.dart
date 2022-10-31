@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
 import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
 import 'package:timezone/timezone.dart';
 
@@ -34,12 +33,6 @@ class FlutterLocalNotificationsPlugin {
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       FlutterLocalNotificationsPlatform.instance =
           IOSFlutterLocalNotificationsPlugin();
-    } else if (defaultTargetPlatform == TargetPlatform.macOS) {
-      FlutterLocalNotificationsPlatform.instance =
-          MacOSFlutterLocalNotificationsPlugin();
-    } else if (defaultTargetPlatform == TargetPlatform.linux) {
-      FlutterLocalNotificationsPlatform.instance =
-          LinuxFlutterLocalNotificationsPlugin();
     }
   }
 
@@ -74,16 +67,6 @@ class FlutterLocalNotificationsPlugin {
         T == IOSFlutterLocalNotificationsPlugin &&
         FlutterLocalNotificationsPlatform.instance
             is IOSFlutterLocalNotificationsPlugin) {
-      return FlutterLocalNotificationsPlatform.instance as T?;
-    } else if (defaultTargetPlatform == TargetPlatform.macOS &&
-        T == MacOSFlutterLocalNotificationsPlugin &&
-        FlutterLocalNotificationsPlatform.instance
-            is MacOSFlutterLocalNotificationsPlugin) {
-      return FlutterLocalNotificationsPlatform.instance as T?;
-    } else if (defaultTargetPlatform == TargetPlatform.linux &&
-        T == LinuxFlutterLocalNotificationsPlugin &&
-        FlutterLocalNotificationsPlatform.instance
-            is LinuxFlutterLocalNotificationsPlugin) {
       return FlutterLocalNotificationsPlatform.instance as T?;
     }
 
@@ -154,30 +137,6 @@ class FlutterLocalNotificationsPlugin {
         onDidReceiveBackgroundNotificationResponse:
             onDidReceiveBackgroundNotificationResponse,
       );
-    } else if (defaultTargetPlatform == TargetPlatform.macOS) {
-      if (initializationSettings.macOS == null) {
-        throw ArgumentError(
-            'macOS settings must be set when targeting macOS platform.');
-      }
-
-      return await resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
-          ?.initialize(
-        initializationSettings.macOS!,
-        onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
-      );
-    } else if (defaultTargetPlatform == TargetPlatform.linux) {
-      if (initializationSettings.linux == null) {
-        throw ArgumentError(
-            'Linux settings must be set when targeting Linux platform.');
-      }
-
-      return await resolvePlatformSpecificImplementation<
-              LinuxFlutterLocalNotificationsPlugin>()
-          ?.initialize(
-        initializationSettings.linux!,
-        onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
-      );
     }
     return true;
   }
@@ -241,18 +200,6 @@ class FlutterLocalNotificationsPlugin {
               IOSFlutterLocalNotificationsPlugin>()
           ?.show(id, title, body,
               notificationDetails: notificationDetails?.iOS, payload: payload);
-    } else if (defaultTargetPlatform == TargetPlatform.macOS) {
-      await resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
-          ?.show(id, title, body,
-              notificationDetails: notificationDetails?.macOS,
-              payload: payload);
-    } else if (defaultTargetPlatform == TargetPlatform.linux) {
-      await resolvePlatformSpecificImplementation<
-              LinuxFlutterLocalNotificationsPlugin>()
-          ?.show(id, title, body,
-              notificationDetails: notificationDetails?.linux,
-              payload: payload);
     } else {
       await FlutterLocalNotificationsPlatform.instance.show(id, title, body);
     }
@@ -384,13 +331,6 @@ class FlutterLocalNotificationsPlugin {
                   uiLocalNotificationDateInterpretation,
               payload: payload,
               matchDateTimeComponents: matchDateTimeComponents);
-    } else if (defaultTargetPlatform == TargetPlatform.macOS) {
-      await resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
-          ?.zonedSchedule(
-              id, title, body, scheduledDate, notificationDetails.macOS,
-              payload: payload,
-              matchDateTimeComponents: matchDateTimeComponents);
     }
   }
 
@@ -432,11 +372,6 @@ class FlutterLocalNotificationsPlugin {
               IOSFlutterLocalNotificationsPlugin>()
           ?.periodicallyShow(id, title, body, repeatInterval,
               notificationDetails: notificationDetails.iOS, payload: payload);
-    } else if (defaultTargetPlatform == TargetPlatform.macOS) {
-      await resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
-          ?.periodicallyShow(id, title, body, repeatInterval,
-              notificationDetails: notificationDetails.macOS, payload: payload);
     } else {
       await FlutterLocalNotificationsPlatform.instance
           .periodicallyShow(id, title, body, repeatInterval);
